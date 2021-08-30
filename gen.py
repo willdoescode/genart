@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
 import random
 from typing import List, Tuple
+from enum import Enum
 
 
 def random_hex() -> str:
@@ -16,6 +17,10 @@ def random_color_range() -> List[str]:
     return random_hexs(random.randint(1, 20))
 
 
+class DrawType(Enum):
+    ELLIPSE = 0
+
+
 class Shape:
     x: int
     y: int
@@ -25,12 +30,13 @@ class Shape:
     def __init__(self, x: int, y: int, color: str, line_width: int = 1) -> None:
         (self.x, self.y, self.color, self.line_width) = (x, y, color, line_width)
 
-    def draw(self, image_draw: ImageDraw, xy=Tuple[Tuple[int, int], Tuple[int, int]]) -> None:
-        image_draw.ellipse(
-            xy=xy,
-            outline=self.color,
-            width=self.line_width
-        )
+    def draw(self, image_draw: ImageDraw, xy: Tuple[Tuple[int, int], Tuple[int, int]], draw_type: DrawType = DrawType.ELLIPSE) -> None:
+        if draw_type == DrawType.ELLIPSE:
+            image_draw.ellipse(
+                xy=xy,
+                outline=self.color,
+                width=self.line_width
+            )
 
 
 class Circle(Shape):
@@ -44,7 +50,7 @@ class Circle(Shape):
         return super().draw(image_draw=image_draw, xy=(
             (self.x - self.radius, self.y - self.radius),
             (self.x + self.radius, self.y + self.radius)
-        ))
+        ), draw_type=DrawType.ELLIPSE)
 
 
 def main() -> None:
