@@ -2,6 +2,13 @@ from PIL import Image, ImageDraw
 import random
 from typing import List, Tuple
 from enum import Enum
+import os
+
+
+def setup_env():
+    if not os.path.isdir('./generated'):
+        os.mkdir('./generated')
+    os.chdir('./generated')
 
 
 def random_hex() -> str:
@@ -61,7 +68,7 @@ class Circle(Shape):
         ), draw_type=DrawType.ELLIPSE)
 
     def __str__(self) -> str:
-        return super().__str__() + f': Radius: {self.radius}, Pos: ({self.x}, {self.y})'
+        return super().__str__() + f': Radius: {self.radius}, Pos: ({self.x}, {self.y}), Line Width: {self.line_width}'
 
 
 class Square(Shape):
@@ -79,30 +86,33 @@ class Square(Shape):
         ), draw_type=DrawType.RECTANGLE)
 
     def __str__(self) -> str:
-        return super().__str__() + f': Width: {self.width}, Height: {self.height}, Pos: ({self.x}, {self.y})'
+        return super().__str__() + f': Width: {self.width}, Height: {self.height}, Pos: ({self.x}, {self.y}), Line Width: {self.line_width}'
 
 
 def main() -> None:
+    setup_env()
+
     image = Image.new('RGBA', (1200, 1200), random_hex())
     image_draw = ImageDraw.Draw(im=image)
-    for hexes in random_hexs(5):
+    for hexes in random_hexs(random.randint(3, 6)):
         square = Square(
             x=1200/2,
             y=1200/2,
             width=random.randint(0, 1200),
             height=random.randint(0, 1200),
             color=hexes,
-            line_width=10,
+            line_width=random.randint(5, 15),
         )
         square.draw(image_draw=image_draw)
         print(square)
 
+    for hexes in random_hexs(random.randint(3, 6)):
         circle = Circle(
             x=1200/2,
             y=1200/2,
             radius=random.randint(0, 1200),
             color=hexes,
-            line_width=10,
+            line_width=random.randint(5, 15),
         )
         circle.draw(image_draw=image_draw)
         print(circle)
